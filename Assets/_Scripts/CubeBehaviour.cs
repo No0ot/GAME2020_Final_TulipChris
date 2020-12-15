@@ -63,7 +63,7 @@ public class CubeBehaviour : MonoBehaviour
     private MeshFilter meshFilter;
     public Bounds bounds;
     public bool isGrounded;
-
+    public RigidBody3D body;
 
     // Start is called before the first frame update
     void Start()
@@ -82,6 +82,7 @@ public class CubeBehaviour : MonoBehaviour
         max = Vector3.Scale(bounds.max, transform.localScale) + transform.position;
         min = Vector3.Scale(bounds.min, transform.localScale) + transform.position;
 
+       
     }
 
     private void OnDrawGizmos()

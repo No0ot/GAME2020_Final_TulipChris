@@ -9,6 +9,8 @@ public class CollisionManager : MonoBehaviour
     public CubeBehaviour[] cubes;
     public BulletBehaviour[] spheres;
 
+   // public PlayerBehaviour player;
+
     private static Vector3[] faces;
 
     // Start is called before the first frame update
@@ -50,11 +52,11 @@ public class CollisionManager : MonoBehaviour
                 {
                     CheckSphereAABB(sphere, cube);
                 }
-                
+
             }
         }
 
-
+ 
     }
 
     public static void CheckSphereAABB(BulletBehaviour s, CubeBehaviour b)
@@ -171,11 +173,17 @@ public class CollisionManager : MonoBehaviour
                     }
                 }
 
+                if(contactB.face == Vector3.forward || contactB.face == Vector3.back || contactB.face == Vector3.left || contactB.face == Vector3.right)
+                {
+                   
+                }
+
                 if (contactB.face == Vector3.down)
                 {
                     a.gameObject.GetComponent<RigidBody3D>().Stop();
                     a.isGrounded = true;
                 }
+
                 
 
                 // add the new contact
@@ -201,3 +209,4 @@ public class CollisionManager : MonoBehaviour
         }
     }
 }
+

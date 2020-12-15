@@ -43,7 +43,7 @@ public class PlayerBehaviour : MonoBehaviour
                 body.velocity = playerCam.transform.right * speed * Time.deltaTime;
             }
 
-            if (Input.GetAxisRaw("Horizontal") < 0.0f)
+           if (Input.GetAxisRaw("Horizontal") < 0.0f)
             {
                 // move left
                 body.velocity = -playerCam.transform.right * speed * Time.deltaTime;
@@ -61,19 +61,23 @@ public class PlayerBehaviour : MonoBehaviour
                 body.velocity = -playerCam.transform.forward * speed * Time.deltaTime;
             }
 
-            body.velocity = Vector3.Lerp(body.velocity, Vector3.zero, 0.9f);
-            body.velocity = new Vector3(body.velocity.x, 0.0f, body.velocity.z); // remove y
+           body.velocity = Vector3.Lerp(body.velocity, Vector3.zero, 0.9f);
+           body.velocity = new Vector3(body.velocity.x, 0.0f, body.velocity.z); // remove y
             
 
             if (Input.GetAxisRaw("Jump") > 0.0f)
             {
-                body.velocity = transform.up * speed * 0.1f * Time.deltaTime;
+                body.velocity += transform.up * speed * 0.1f * Time.deltaTime;
             }
 
             transform.position += body.velocity;
         }
     }
 
+    private void _CheckColllisions()
+    {
+
+    }
 
     private void _Fire()
     {
