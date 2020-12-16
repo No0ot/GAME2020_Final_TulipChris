@@ -73,6 +73,7 @@ public class PlayerBehaviour : MonoBehaviour
 
             transform.position += body.velocity;
 
+        }
             if (Input.GetKeyDown("t"))
             {
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
@@ -83,7 +84,6 @@ public class PlayerBehaviour : MonoBehaviour
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
                 
             }
-        }
     }
 
     private void _CheckColllisions()
@@ -98,7 +98,7 @@ public class PlayerBehaviour : MonoBehaviour
             // delays firing
             if (Time.frameCount % fireRate == 0)
             {
-
+                
                 var tempBullet = bulletManager.GetBullet(bulletSpawn.position, bulletSpawn.forward);
                 tempBullet.transform.SetParent(bulletManager.gameObject.transform);
             }

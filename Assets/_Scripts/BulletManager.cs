@@ -7,6 +7,7 @@ public class BulletManager : MonoBehaviour
     public int MaxBullets;
     public GameObject bullet;
 
+    public int bulcount;
     public Queue<GameObject> m_playerBulletPool;
 
     // Start is called before the first frame update
@@ -31,11 +32,15 @@ public class BulletManager : MonoBehaviour
 
     public GameObject GetBullet(Vector3 position, Vector3 direction)
     {
+        if(bulcount < MaxBullets)
+          direction.x = direction.x * -1.0f;
+
         GameObject newBullet = null;
         newBullet = m_playerBulletPool.Dequeue();
         newBullet.SetActive(true);
         newBullet.transform.position = position;
         newBullet.GetComponent<BulletBehaviour>().direction = direction;
+        bulcount++;
 
         return newBullet;
     }
