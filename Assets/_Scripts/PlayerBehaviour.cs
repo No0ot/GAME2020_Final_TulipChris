@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerBehaviour : MonoBehaviour
 {
@@ -40,25 +41,25 @@ public class PlayerBehaviour : MonoBehaviour
             if (Input.GetAxisRaw("Horizontal") > 0.0f)
             {
                 // move right
-                body.velocity = playerCam.transform.right * speed * Time.deltaTime;
+                body.velocity += playerCam.transform.right * speed * Time.deltaTime;
             }
 
            if (Input.GetAxisRaw("Horizontal") < 0.0f)
             {
                 // move left
-                body.velocity = -playerCam.transform.right * speed * Time.deltaTime;
+                body.velocity += -playerCam.transform.right * speed * Time.deltaTime;
             }
 
             if (Input.GetAxisRaw("Vertical") > 0.0f)
             {
                 // move forward
-                body.velocity = playerCam.transform.forward * speed * Time.deltaTime;
+                body.velocity += playerCam.transform.forward * speed * Time.deltaTime;
             }
 
             if (Input.GetAxisRaw("Vertical") < 0.0f) 
             {
                 // move Back
-                body.velocity = -playerCam.transform.forward * speed * Time.deltaTime;
+                body.velocity += -playerCam.transform.forward * speed * Time.deltaTime;
             }
 
            body.velocity = Vector3.Lerp(body.velocity, Vector3.zero, 0.9f);
@@ -71,6 +72,17 @@ public class PlayerBehaviour : MonoBehaviour
             }
 
             transform.position += body.velocity;
+
+            if (Input.GetKeyDown("t"))
+            {
+                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
+                Cursor.visible = true;
+            }
+            if (Input.GetKeyDown("r"))
+            {
+                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+                
+            }
         }
     }
 

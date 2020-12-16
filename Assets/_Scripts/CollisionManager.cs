@@ -8,6 +8,7 @@ public class CollisionManager : MonoBehaviour
 {
     public CubeBehaviour[] cubes;
     public BulletBehaviour[] spheres;
+    public PlayerBehaviour player;
 
    // public PlayerBehaviour player;
 
@@ -38,7 +39,8 @@ public class CollisionManager : MonoBehaviour
             {
                 if (i != j)
                 {
-                    CheckAABBs(cubes[i], cubes[j]);
+                    if(cubes[i].name != "Player" && cubes[j].name != "Player")
+                        CheckAABBs(cubes[i], cubes[j]);
                 }
             }
         }
@@ -56,7 +58,13 @@ public class CollisionManager : MonoBehaviour
             }
         }
 
- 
+        foreach( var cube in cubes)
+        {
+            if (cube.name != "Player")
+            {
+                PlayerCheckAABBs(player, cube);
+            }
+        }
     }
 
     public static void CheckSphereAABB(BulletBehaviour s, CubeBehaviour b)
@@ -173,11 +181,6 @@ public class CollisionManager : MonoBehaviour
                     }
                 }
 
-                if(contactB.face == Vector3.forward || contactB.face == Vector3.back || contactB.face == Vector3.left || contactB.face == Vector3.right)
-                {
-                   
-                }
-
                 if (contactB.face == Vector3.down)
                 {
                     a.gameObject.GetComponent<RigidBody3D>().Stop();
@@ -208,5 +211,95 @@ public class CollisionManager : MonoBehaviour
             }
         }
     }
+    public static void PlayerCheckAABBs(PlayerBehaviour a, CubeBehaviour b)
+    {
+        Contact contactB = new Contact(b);
+
+        if ((a.cube.min.x <= b.max.x && a.cube.max.x >= b.min.x) &&
+            (a.cube.min.y <= b.max.y && a.cube.max.y >= b.min.y) &&
+            (a.cube.min.z <= b.max.z && a.cube.max.z >= b.min.z))
+        {
+            // determine the distances between the contact extents
+            float[] distances = {
+                (b.max.x - a.cube.min.x),
+                (a.cube.max.x - b.min.x),
+                (b.max.y - a.cube.min.y),
+                (a.cube.max.y - b.min.y),
+                (b.max.z - a.cube.min.z),
+                (a.cube.max.z - b.min.z)
+            };
+
+            float penetration = float.MaxValue;
+            Vector3 face = Vector3.zero;
+
+            // check each face to see if it is the one that connected
+            for (int i = 0; i < 6; i++)
+            {
+                if (distances[i] < penetration)
+                {
+                    // determine the penetration distance
+                    penetration = distances[i];
+                    face = faces[i];
+                }
+            }
+
+            // set the contact properties
+            contactB.face = face;
+            contactB.penetration = penetration;
+
+
+            // check if contact does not exist
+            if (!a.cube.contacts.Contains(contactB))
+            {
+                // remove any contact that matches the name but not other parameters
+                for (int i = a.cube.contacts.Count - 1; i > -1; i--)
+                {
+                    if (a.cube.contacts[i].cube.name.Equals(contactB.cube.name))
+                    {
+                        a.cube.contacts.RemoveAt(i);
+                    }
+                }
+
+                if (contactB.face == Vector3.forward || contactB.face == Vector3.back || contactB.face == Vector3.left || contactB.face == Vector3.right)
+                {
+                    
+                    Debug.Log(contactB.ToString());
+                    b.transform.position += contactB.face * penetration;
+                }
+
+                if (contactB.face == Vector3.down)
+                {
+                    Debug.Log(contactB.ToString());
+                    a.gameObject.GetComponent<RigidBody3D>().Stop();
+                    a.cube.isGrounded = true;
+                }
+
+
+
+                // add the new contact
+                a.cube.contacts.Add(contactB);
+                a.cube.isColliding = true;
+
+            }
+        }
+        else
+        {
+
+            if (a.cube.contacts.Exists(x => x.cube.gameObject.name == b.gameObject.name))
+            {
+                a.cube.contacts.Remove(a.cube.contacts.Find(x => x.cube.gameObject.name.Equals(b.gameObject.name)));
+                a.cube.isColliding = false;
+
+                if (a.gameObject.GetComponent<RigidBody3D>().bodyType == BodyType.DYNAMIC)
+                {
+                    a.gameObject.GetComponent<RigidBody3D>().isFalling = true;
+                    a.cube.isGrounded = false;
+                }
+            }
+        }
+    }
+
 }
+
+
 
