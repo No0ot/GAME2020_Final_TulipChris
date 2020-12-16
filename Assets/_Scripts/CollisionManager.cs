@@ -187,8 +187,6 @@ public class CollisionManager : MonoBehaviour
                     a.isGrounded = true;
                 }
 
-                
-
                 // add the new contact
                 a.contacts.Add(contactB);
                 a.isColliding = true;
@@ -211,6 +209,7 @@ public class CollisionManager : MonoBehaviour
             }
         }
     }
+
     public static void PlayerCheckAABBs(PlayerBehaviour a, CubeBehaviour b)
     {
         Contact contactB = new Contact(b);
@@ -262,9 +261,12 @@ public class CollisionManager : MonoBehaviour
 
                 if (contactB.face == Vector3.forward || contactB.face == Vector3.back || contactB.face == Vector3.left || contactB.face == Vector3.right)
                 {
-                    
-                    Debug.Log(contactB.ToString());
-                    b.transform.position += contactB.face * penetration;
+                    if (b.gameObject.GetComponent<RigidBody3D>().bodyType != BodyType.STATIC)
+                    {
+                        Debug.Log(contactB.ToString());
+                        b.transform.position += contactB.face * penetration;
+                    }
+                    a.transform.position -= contactB.face * penetration;
                 }
 
                 if (contactB.face == Vector3.down)
